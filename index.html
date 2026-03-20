@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Matt 🍳</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Mono:wght@400;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Space Mono', monospace;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      background: #0d0d0d;
+    }
+
+    .screen {
+      display: none;
+      position: absolute;
+      inset: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+    .screen.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes wobble {
+      0%,100% { transform: rotate(-2deg); }
+      50%      { transform: rotate(2deg); }
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-12px); }
+    }
+    @keyframes pop {
+      0%   { transform: scale(0); opacity: 0; }
+      70%  { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 0.7; }
+      50%      { transform: scale(1.1); opacity: 1; }
+    }
+    @keyframes wagtail {
+      0%,100% { transform: rotate(-20deg); }
+      50%      { transform: rotate(20deg); }
+    }
+    @keyframes heartbeat {
+      0%,100% { transform: scale(1); }
+      15%      { transform: scale(1.25); }
+      30%      { transform: scale(1); }
+      45%      { transform: scale(1.15); }
+      60%      { transform: scale(1); }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes flicker {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.7; }
+      75%      { opacity: 0.9; }
+    }
+
+    /* ─── GLOBAL BTN ─── */
+    .btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      padding: 15px 34px;
+      border-radius: 50px;
+      margin-top: 28px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .btn:hover  { transform: scale(1.06); }
+    .btn:active { transform: scale(0.96); }
+
+    /* ──────────────────────────────────────────
+       SCREEN 1: THE OPENER
+    ────────────────────────────────────────── */
+    #s1 { background: #0d0d0d; color: #f5f0e8; }
+    #s1 .emoji { font-size: 5.5rem; animation: float 3s ease-in-out infinite; margin-bottom: 8px; }
+    #s1 h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(4rem, 12vw, 8rem);
+      font-weight: 900;
+      color: #f5f0e8;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    #s1 .sub { color: #555; font-size: 0.75rem; margin-top: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+    #s1 .btn { background: #f5f0e8; color: #0d0d0d; box-shadow: 0 4px 30px rgba(245,240,232,0.12); }
+
+    /* ──────────────────────────────────────────
+       SCREEN 2: THE STEAKHOUSE
+    ────────────────────────────────────────── */
+    #s2 { background: #1a0000; }
+    #s2 .sign {
+      background: #8b0000;
+      color: #ffcc44;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      padding: 10px 24px;
+      border-radius: 6px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      border: 3px solid #ffcc44;
+      animation: flicker 3s ease-in-out infinite;
+    }
+    #s2 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      color: #ff6b35;
+      font-weight: 900;
+      line-height: 1.2;
+      max-width: 560px;
+    }
+    #s2 .steak-facts {
+      margin: 20px 0;
+      max-width: 500px;
+      text-align: left;
+    }
+    #s2 .steak-facts li {
+      font-size: 0.82rem;
+      color: #883322;
+      padding: 7px 0;
+      border-bottom: 1px solid #2d0000;
+      list-style: none;
+      line-height: 1.5;
+    }
+    #s2 .steak-facts li::before { content: '🥩 '; }
+    #s2 .btn { background: #ff6b35; color: #1a0000; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 3: DOG AND SHIT
+    ────────────────────────────────────────── */
+    #s3 { background: #111; color: #e8e0d4; }
+    .coworker-cards {
+      display: flex;
+      gap: 16px;
+      margin: 24px 0;
+      max-width: 480px;
+    }
+    .coworker-card {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .coworker-card .avatar { font-size: 2.5rem; margin-bottom: 10px; }
+    .coworker-card .name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #ff6b35;
+      margin-bottom: 8px;
+    }
+    .coworker-card p { font-size: 0.72rem; color: #666; line-height: 1.6; }
+    #s3 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 900;
+      color: #e8e0d4;
+      max-width: 560px;
+      line-height: 1.2;
+    }
+    #s3 .footnote { font-size: 0.75rem; color: #555; margin-top: 8px; max-width: 460px; line-height: 1.6; }
+    #s3 .btn { background: #e8e0d4; color: #111; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 4: HE CARES ANYWAY
+    ────────────────────────────────────────── */
+    #s4 { background: #0a1628; color: #7fbbff; }
+    #s4 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      color: #7fbbff;
+      max-width: 540px;
+      line-height: 1.2;
+    }
+    #s4 .care-note {
+      background: #0d2040;
+      border-left: 3px solid #7fbbff;
+      padding: 16px 20px;
+      margin: 20px 0;
+      max-width: 480px;
+      text-align: left;
+      border-radius: 0 12px 12px 0;
+      font-size: 0.85rem;
+      color: #5a8fc7;
+      line-height: 1.8;
+    }
+    #s4 .care-note strong { color: #7fbbff; }
+    #s4 .btn { background: #7fbbff; color: #0a1628; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 5: THE ESCAPE BUTTONS
+    ────────────────────────────────────────── */
+    #s5 { background: #f5f0e8; color: #1a1a1a; position: relative; }
+    #s5 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      color: #1a1a1a;
+      max-width: 540px;
+      line-height: 1.2;
+    }
+    #s5 .subtitle { font-size: 0.75rem; color: #999; margin-top: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .escape-wrapper {
+      position: relative;
+      width: 360px;
+      height: 64px;
+      margin: 16px auto 0;
+    }
+    .escape-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      padding: 14px 20px;
+      border-radius: 50px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      position: absolute;
+      transition: top 0.08s, left 0.08s;
+      white-space: nowrap;
+    }
+    .escape-btn.gold { background: #d4a017; color: #1a1a1a; top: 0; left: 0; }
+    .escape-btn.green { background: #2a7a3a; color: #f5f0e8; top: 0; left: 0; }
+    .escape-msg {
+      font-size: 0.7rem;
+      color: #bbb;
+      margin-top: 6px;
+      min-height: 20px;
+      letter-spacing: 0.05em;
+    }
+    #s5 .actual-btn { background: #1a1a1a; color: #f5f0e8; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 6: PUN BREAK
+    ────────────────────────────────────────── */
+    #s6 { background: #fff700; color: #1a1a1a; }
+    #s6 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      color: #1a1a1a;
+    }
+    #s6 .subtitle { font-size: 0.72rem; color: #555; margin-top: 6px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .pun-box {
+      background: #1a1a1a;
+      color: #fff700;
+      padding: 18px 24px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      max-width: 460px;
+      width: 100%;
+      margin: 12px 0;
+      line-height: 1.8;
+      text-align: left;
+      animation: pop 0.4s ease backwards;
+    }
+    .pun-box .punchline {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #fff700;
+      margin-top: 6px;
+    }
+    .pun-box:nth-child(2) { animation-delay: 0.15s; }
+    .pun-box:nth-child(3) { animation-delay: 0.3s; }
+    #s6 .btn { background: #1a1a1a; color: #fff700; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 7: THE DOG
+    ────────────────────────────────────────── */
+    #s7 { background: #1a1a2e; color: #f5f0e8; }
+    #s7 .dog-section {
+      position: relative;
+      margin: 16px 0;
+    }
+    #s7 .dog-emoji {
+      font-size: 6rem;
+      display: block;
+      animation: float 2.5s ease-in-out infinite;
+    }
+    #s7 .tail {
+      font-size: 2rem;
+      display: inline-block;
+      animation: wagtail 0.3s ease-in-out infinite;
+      margin-left: -10px;
+    }
+    #s7 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      color: #f5f0e8;
+      max-width: 520px;
+      line-height: 1.2;
+      margin-top: 12px;
+    }
+    #s7 p {
+      font-size: 0.85rem;
+      color: #8888bb;
+      max-width: 440px;
+      line-height: 1.8;
+      margin-top: 12px;
+    }
+    #s7 .btn { background: #f5f0e8; color: #1a1a2e; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 8: THE TURN
+    ────────────────────────────────────────── */
+    #s8 { background: #1a2e1a; color: #a8d5a2; }
+    #s8 .big-emoji { font-size: 4.5rem; animation: float 3s ease-in-out infinite; }
+    #s8 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      color: #a8d5a2;
+      line-height: 1.2;
+      max-width: 540px;
+      margin: 14px 0 8px;
+    }
+    #s8 p {
+      font-size: 0.85rem;
+      color: #6aaa64;
+      max-width: 460px;
+      line-height: 1.85;
+    }
+    #s8 .btn { background: #a8d5a2; color: #1a2e1a; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 9: WHAT NOW
+    ────────────────────────────────────────── */
+    #s9 { background: #fff8e7; color: #1a1a1a; }
+    #s9 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      color: #1a1a1a;
+      max-width: 520px;
+      line-height: 1.2;
+    }
+    .activity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin: 24px 0;
+      max-width: 480px;
+    }
+    .activity-card {
+      background: #1a1a1a;
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .activity-card .icon { font-size: 2rem; display: block; margin-bottom: 8px; }
+    .activity-card p { font-size: 0.72rem; color: #ccc; line-height: 1.4; }
+    #s9 .btn { background: #1a1a1a; color: #fff8e7; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 10: THE POINT
+    ────────────────────────────────────────── */
+    #s10 { background: #f5f0e8; color: #1a1a1a; overflow-y: auto; }
+    #s10 .card {
+      background: #1a1a1a;
+      color: #f5f0e8;
+      border-radius: 22px;
+      padding: 32px 28px;
+      max-width: 500px;
+      text-align: left;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+      animation: slideUp 0.5s ease;
+    }
+    #s10 .card p { font-size: 0.85rem; line-height: 1.95; color: #ccc; }
+    #s10 .card p + p { margin-top: 14px; }
+    #s10 .card strong { color: #f5f0e8; }
+    #s10 .card .from {
+      margin-top: 22px;
+      font-size: 0.72rem;
+      color: #666;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    #s10 h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      font-weight: 900;
+      margin-bottom: 22px;
+      color: #f5f0e8;
+    }
+    #s10 .btn { background: #1a1a1a; color: #f5f0e8; margin-top: 24px; }
+
+    /* ──────────────────────────────────────────
+       SCREEN 11: THE FINALE
+    ────────────────────────────────────────── */
+    #s11 { background: radial-gradient(ellipse at center, #2a1a4a 0%, #0d0d0d 100%); color: #f5f0e8; }
+    .star-field { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .star {
+      position: absolute; background: #fff; border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    #s11 .content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    #s11 .top-emojis { font-size: 3rem; margin-bottom: 8px; animation: float 4s ease-in-out infinite; }
+    #s11 h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 900;
+      color: #f5f0e8;
+      line-height: 1.1;
+      max-width: 600px;
+      margin: 12px 0 8px;
+    }
+    #s11 .sub { font-size: 0.72rem; color: #666; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 20px; }
+    #s11 .love-note { font-size: 0.82rem; color: #999; max-width: 380px; line-height: 1.85; }
+    #s11 .love-note strong { color: #f5f0e8; }
+    .heart { font-size: 1.2rem; display: inline-block; animation: heartbeat 2s ease-in-out infinite; }
+    #s11 .restart-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      background: none;
+      border: 1px solid #333;
+      color: #555;
+      padding: 10px 22px;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 28px;
+      letter-spacing: 0.06em;
+      transition: all 0.2s;
+    }
+    #s11 .restart-btn:hover { border-color: #777; color: #999; }
+
+    /* ─── PROGRESS DOTS ─── */
+    .dots {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 7px;
+      z-index: 100;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .dot.active { background: rgba(255,255,255,0.75); transform: scale(1.4); }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 1: THE OPENER       ║
+     ╚══════════════════════════════╝ -->
+<div class="screen active" id="s1">
+  <div class="emoji">🍳</div>
+  <h1>Hey Matt.</h1>
+  <p class="sub">this is for you. yes, you specifically.</p>
+  <button class="btn" onclick="go(2)">...yeah?</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 2: THE STEAKHOUSE   ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s2">
+  <div class="sign">★ The Steakhouse ★</div>
+  <h2>You are cooking beautiful food in a horrible place.</h2>
+  <ul class="steak-facts">
+    <li>Every steak you send out is done right. The place does not deserve that.</li>
+    <li>You have standards. The steakhouse does not. This is the conflict.</li>
+    <li>You care about the quality of a medium-rare more than most people care about anything.</li>
+    <li>The job is draining you. But YOU are not the problem.</li>
+  </ul>
+  <button class="btn" onclick="go(3)">okay. and about my colleagues.</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 3: DOG AND SHIT     ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s3">
+  <h2>Your colleagues.</h2>
+  <div class="coworker-cards">
+    <div class="coworker-card">
+      <div class="avatar">🐕</div>
+      <div class="name">Dog</div>
+      <p>Makes bad steaks. Is a bad person. These two things are connected.</p>
+    </div>
+    <div class="coworker-card">
+      <div class="avatar">💩</div>
+      <div class="name">Shit</div>
+      <p>Also makes bad steaks. Also a bad person. The name was not given lightly.</p>
+    </div>
+  </div>
+  <p class="footnote">The good ones left. You watched the people worth working with walk out the door one by one, and now you are standing next to Dog and Shit, watching them ruin steaks. That is not weakness. That is a punishment.</p>
+  <button class="btn" onclick="go(4)">and I still have to fix their steaks.</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 4: HE CARES ANYWAY  ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s4">
+  <h2>Yeah. That's the actual damage.</h2>
+  <div class="care-note">
+    The good colleagues didn't just leave the steakhouse. They took the thing that made the shifts survivable with them. The banter, the shorthand, the one person who plated things properly and made you feel like you weren't going insane.<br><br>
+    <strong>Now it's you, Dog, and Shit.</strong><br><br>
+    You are overqualified, surrounded by people making bad steaks badly, in a place that does not deserve your standards. And yet every steak still goes out right because that is how you are built. You fix their work quietly and say nothing. That is genuinely maddening. You are allowed to be furious about it.
+  </div>
+  <button class="btn" onclick="go(5)">so what are my options</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 5: ESCAPE BUTTONS   ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s5">
+  <h2>Your options.</h2>
+  <p class="subtitle">click anything that seems realistic</p>
+
+  <div style="margin-top: 28px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 20px; align-items: center;">
+
+    <div style="width: 100%; position: relative; height: 56px;">
+      <button class="escape-btn gold" id="escBtn1">
+        💰 Move in with Zheng &amp; Anna (they're loaded)
+      </button>
+    </div>
+    <div class="escape-msg" id="msg1"></div>
+
+    <div style="width: 100%; position: relative; height: 56px;">
+      <button class="escape-btn green" id="escBtn2">
+        🎰 Claim €5,000,000 lottery win
+      </button>
+    </div>
+    <div class="escape-msg" id="msg2"></div>
+
+  </div>
+
+  <button class="btn actual-btn" onclick="go(6)" style="margin-top: 32px;">fine. what else.</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 6: PUN BREAK        ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s6">
+  <h2>Pun break.</h2>
+  <p class="subtitle">mandatory. no skipping.</p>
+  <div class="pun-box">
+    Dog asked Matt how he stays so calm during service.<br>
+    <span class="punchline">Matt said nothing. He just stared into the middle distance for four seconds. Dog never asked again.</span>
+  </div>
+  <div class="pun-box">
+    What do you call a steak cooked by Shit?<br>
+    <span class="punchline">A problem for Matt to fix before it reaches the table.</span>
+  </div>
+  <button class="btn" onclick="go(7)">honestly. fine. moving on.</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 7: THE DOG          ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s7">
+  <div class="dog-section">
+    <span class="dog-emoji">🐶</span>
+  </div>
+  <h2>Nelli is waiting for you at home right now.</h2>
+  <p>Black dog. Zero opinions about the steakhouse. Does not know what Dog or Shit are and does not need to. Absolutely losing her mind with joy the second you open the door, every single time, no exceptions, no bad services, no context required.</p>
+  <p style="margin-top: 12px; color: #6666aa;">Nelli thinks you are the greatest thing that has ever existed. She wags so hard her whole body shakes. Every time. No exceptions.</p>
+  <button class="btn" onclick="go(8)">okay I teared up a bit</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 8: THE TURN         ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s8">
+  <div class="big-emoji">🌱</div>
+  <h2>Burnout is not a verdict.</h2>
+  <p>It's a receipt. It's proof you put in real work, for real, for a long time, and your body finally sent up a flare. It means the passion was real. It doesn't mean it's gone.</p>
+  <p style="margin-top: 12px;">The chefs who stop caring don't burn out. They just go through the motions and disappear slowly. You are burning out because you still give a damn. That is a completely different thing.</p>
+  <button class="btn" onclick="go(9)">okay but what do I actually do</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 9: WHAT NOW         ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s9">
+  <h2>Things that are waiting for you right now.</h2>
+  <div class="activity-grid">
+    <div class="activity-card">
+      <span class="icon">🐕</span>
+      <p>Long walks with Nelli. No tickets. No customers. Just dog.</p>
+    </div>
+    <div class="activity-card">
+      <span class="icon">🏸</span>
+      <p>Badminton. Hit things. Feel better. Simple.</p>
+    </div>
+    <div class="activity-card">
+      <span class="icon">🍳</span>
+      <p>Cook something you actually want to eat. For yourself. No one's sending it back.</p>
+    </div>
+    <div class="activity-card">
+      <span class="icon">😴</span>
+      <p>Sleep. Properly. Not six hours and a double shift.</p>
+    </div>
+    <div class="activity-card">
+      <span class="icon">⚔️</span>
+      <p>HoMM3. A whole campaign. Nobody needs anything from you.</p>
+    </div>
+    <div class="activity-card">
+      <span class="icon">📞</span>
+      <p>Call your friends. The real ones. They want to hear from you.</p>
+    </div>
+  </div>
+  <button class="btn" onclick="go(10)">alright. one more thing.</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 10: THE POINT       ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s10">
+  <div class="card">
+    <h2>The actual point.</h2>
+    <p>The steakhouse is <strong>not the measure of you.</strong> Dog and Shit are not the measure of you. A bad service, a table that didn't appreciate it, a 14-hour shift that left you empty: none of it.</p>
+    <p>The good ones left because the place isn't worth staying for. You already know that. The only difference between them and you is timing.</p>
+    <p>You are allowed to rest. You are allowed to feel nothing about cooking for a while. <strong>That is not quitting.</strong> That's a human who has been running at full heat for too long.</p>
+    <p class="from">made with love by Anna</p>
+  </div>
+  <button class="btn" onclick="go(11)">one more thing</button>
+</div>
+
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 11: THE FINALE      ║
+     ╚══════════════════════════════╝ -->
+<div class="screen" id="s11">
+  <div class="star-field" id="stars" style="position:absolute;inset:0;"></div>
+  <div class="content">
+    <div class="top-emojis">👨‍🍳 🐶 <span class="heart">❤️</span></div>
+    <h1>You're still the best chef I know, Matt.</h1>
+    <p class="sub">and also the best human in that terrible steakhouse</p>
+    <p class="love-note">
+      The kitchen will still be there.<br>
+      Your knives will still be sharp.<br>
+      Dog and Shit will still need you.<br>
+      Nelli will still go feral when you walk in.<br><br>
+      And the world still needs the man who makes<br>
+      <strong>the best cream pies and soggy biscuits</strong> in the business.<br><br>
+      Right now, the most important thing on the menu is <strong>you.</strong>
+    </p>
+    <button class="restart-btn" onclick="go(1)">↺ read again (you know you want to)</button>
+  </div>
+</div>
+
+<!-- PROGRESS DOTS -->
+<div class="dots" id="dots"></div>
+
+<script>
+  const TOTAL = 11;
+  let current = 1;
+
+  // Build dots
+  const dotsEl = document.getElementById('dots');
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.id = 'dot' + i;
+    dotsEl.appendChild(d);
+  }
+
+  // Build stars
+  const starField = document.getElementById('stars');
+  for (let i = 0; i < 70; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s;opacity:${0.3+Math.random()*0.7};`;
+    starField.appendChild(s);
+  }
+
+  function go(n) {
+    document.getElementById('s' + current).classList.remove('active');
+    document.getElementById('dot' + current).classList.remove('active');
+    current = n;
+    document.getElementById('s' + current).classList.add('active');
+    document.getElementById('dot' + current).classList.add('active');
+    // Reset escape buttons when re-entering screen 5
+    if (n === 5) resetEscape();
+  }
+
+  // ─── ESCAPE BUTTON LOGIC ───
+  const escMessages1 = [
+    "nope.",
+    "still nope.",
+    "Zheng specifically said no.",
+    "Anna is pretending she didn't see that.",
+    "the button has opinions.",
+    "try the lottery one instead.",
+    "it's gone. it's just gone.",
+  ];
+  const escMessages2 = [
+    "not today.",
+    "€5M is not available at this time.",
+    "the numbers were 4, 8, 15, 16, 23, 42. you had 7.",
+    "even the lottery feels bad about this.",
+    "the button saw you coming.",
+    "this button has standards.",
+    "truly not happening.",
+  ];
+
+  let attempts1 = 0;
+  let attempts2 = 0;
+
+  function runAway(btnId, msgId, e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    const btn = document.getElementById(btnId);
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const bw = btn.offsetWidth;
+    const bh = btn.offsetHeight;
+    const margin = 16;
+
+    let nx, ny, tries = 0;
+    const curX = parseFloat(btn.style.left) || vw / 2 - bw / 2;
+    const curY = parseFloat(btn.style.top)  || vh / 2 - bh / 2;
+    do {
+      nx = margin + Math.random() * (vw - bw - margin * 2);
+      ny = margin + Math.random() * (vh - bh - margin * 2);
+      tries++;
+    } while (Math.abs(nx - curX) < 100 && Math.abs(ny - curY) < 60 && tries < 40);
+
+    btn.style.position = 'fixed';
+    btn.style.left = nx + 'px';
+    btn.style.top  = ny + 'px';
+    btn.style.zIndex = '999';
+    btn.style.margin = '0';
+    btn.style.transition = 'left 0.12s ease, top 0.12s ease';
+
+    const msgEl = document.getElementById(msgId);
+    if (btnId === 'escBtn1') {
+      msgEl.textContent = escMessages1[Math.min(attempts1, escMessages1.length - 1)];
+      attempts1++;
+    } else {
+      msgEl.textContent = escMessages2[Math.min(attempts2, escMessages2.length - 1)];
+      attempts2++;
+    }
+  }
+
+  function resetEscape() {
+    attempts1 = 0;
+    attempts2 = 0;
+    ['escBtn1','escBtn2'].forEach(id => {
+      const b = document.getElementById(id);
+      b.style.position = 'absolute';
+      b.style.left = '0'; b.style.top = '0';
+      b.style.transition = '';
+    });
+    document.getElementById('msg1').textContent = '';
+    document.getElementById('msg2').textContent = '';
+  }
+
+  // Attach mouse + touch listeners (touch needs preventDefault to block the tap)
+  ['escBtn1','escBtn2'].forEach(id => {
+    const msgId = id === 'escBtn1' ? 'msg1' : 'msg2';
+    const btn = document.getElementById(id);
+    btn.addEventListener('mouseover', (e) => runAway(id, msgId, null));
+    btn.addEventListener('touchstart', (e) => runAway(id, msgId, e), { passive: false });
+    btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); runAway(id, msgId, null); });
+  });
+</script>
+</body>
+</html>
